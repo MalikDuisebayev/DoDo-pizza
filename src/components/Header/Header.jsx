@@ -12,7 +12,7 @@ const Header = () => {
             <img width="38" src={pizzaLogo} alt="Pizza logo" />
             <div>
               <h1>DoDO Pizza</h1>
-              <p>Самая вкусная пицца во Астане</p>
+              <p>Самая вкусная пицца в Астане</p>
             </div>
           </div>
         </Link>

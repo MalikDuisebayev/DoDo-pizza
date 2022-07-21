@@ -1,8 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-const Categories = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const Categories = ({ value, event }) => {
   const arrayCategories = [
     "Все",
     "Мясные",
@@ -18,8 +17,8 @@ const Categories = () => {
           return (
             <li
               key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className={activeIndex === idx ? "active" : ""}
+              onClick={() => event(idx)}
+              className={value === idx ? "active" : ""}
             >
               {el}
             </li>

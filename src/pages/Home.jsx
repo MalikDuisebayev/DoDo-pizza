@@ -10,9 +10,19 @@ import Sceleton from "../components/Sceleton/Sceleton";
 const Home = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const url = "https://62d80b28908831393589cdd8.mockapi.io/items";
+
+  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [sortType, setSortType] = useState({
+    name: "популярности",
+    sort: "rating",
+  });
+
+  const url = `https://62d80b28908831393589cdd8.mockapi.io/items?${
+    categoryIndex > 0 ? `category=${categoryIndex}` : ``
+  }&sortBy=${sortType.sort}&order=desc`;
   useEffect(() => {
-    const data = axios
+    setIsLoading(true);
+    axios
       .get(url)
       .then((res) => res)
       .then((data) => {
@@ -20,12 +30,13 @@ const Home = () => {
         setIsLoading(false);
       })
       .catch((err) => console.log(err.message));
-  }, []);
+    window.scrollTo(0, 0);
+  }, [categoryIndex, sortType]);
   return (
-    <div>
+    <div className="container">
       <div className="content__top">
-        <Categories />
-        <Sort />
+        <Categories value={categoryIndex} event={setCategoryIndex} />
+        <Sort value={sortType} event={setSortType} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
