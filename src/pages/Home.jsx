@@ -7,7 +7,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Sceleton from "../components/Sceleton/Sceleton";
 
-const Home = () => {
+import Pagination from "../components/UI/Pagination/Pagination";
+
+const Home = ({ searchValue }) => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,9 +19,14 @@ const Home = () => {
     sort: "rating",
   });
 
-  const url = `https://62d80b28908831393589cdd8.mockapi.io/items?${
-    categoryIndex > 0 ? `category=${categoryIndex}` : ``
-  }&sortBy=${sortType.sort}&order=desc`;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const CATEGORY = categoryIndex ? `&category=${categoryIndex}` : "";
+  const SORT_BY = sortType ? `&sortBy=${sortType.sort} ` : "";
+  const SEARCH = searchValue ? `&search=${searchValue}` : "";
+
+  const url = `https://62d80b28908831393589cdd8.mockapi.io/items?page=${currentPage}&limit=4${CATEGORY}${SORT_BY}${SEARCH}&order=desc`;
+
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -31,7 +38,11 @@ const Home = () => {
       })
       .catch((err) => console.log(err.message));
     window.scrollTo(0, 0);
-  }, [categoryIndex, sortType]);
+  }, [categoryIndex, sortType, searchValue, currentPage]);
+
+  const SCELETON = [...new Array(4)].map((_, idx) => <Sceleton key={idx} />);
+  const PIZZA = items.map((obj) => <Pizza key={obj.id} {...obj} />);
+
   return (
     <div className="container">
       <div className="content__top">
@@ -39,13 +50,8 @@ const Home = () => {
         <Sort value={sortType} event={setSortType} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, idx) => <Sceleton key={idx} />)
-          : items.map((obj) => {
-              return <Pizza key={obj.id} {...obj} />;
-            })}
-      </div>
+      <div className="content__items">{isLoading ? SCELETON : PIZZA}</div>
+      <Pagination onChangePage={(number) => setCurrentPage(number)} />
     </div>
   );
 };
