@@ -6,8 +6,13 @@ import NotFound from "./pages/NotFound";
 import { Routes, Route } from "react-router-dom";
 import Cart from "./pages/Cart";
 import { useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { increment, decrement } from "./store/filterSlice/filterSlice";
+
 const App = () => {
   const [searchValue, setSearchValue] = useState("");
+
   return (
     <div>
       <div className="wrapper">
