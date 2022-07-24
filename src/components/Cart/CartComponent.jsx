@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const CartComponent = () => {
   return (
-    <div className="container container--cart">
+    <div class="container container--cart">
       <div class="cart">
         <div class="cart__top">
           <h2 class="content__title">

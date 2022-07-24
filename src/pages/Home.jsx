@@ -10,24 +10,30 @@ import Sceleton from "../components/Sceleton/Sceleton";
 import Pagination from "../components/UI/Pagination/Pagination";
 
 import { useSelector, useDispatch } from "react-redux";
-import { setCategoryId } from "../store/filterSlice/filterSlice";
+import {
+  setCategoryId,
+  setCurrentPage,
+} from "../store/filterSlice/filterSlice";
 
 const Home = ({ searchValue }) => {
-  const categoryID = useSelector((state) => state.filter.categoryId);
+  const { categoryId, sort, currentPage } = useSelector(
+    (state) => state.filter
+  );
   const dispatch = useDispatch();
+
   const onChangeCategoryID = (id) => {
-    console.log(id);
     dispatch(setCategoryId(id));
   };
-
-  const sort = useSelector((state) => state.filter.sort);
 
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const onClickPageCount = (number) => {
+    console.log(number);
+    dispatch(setCurrentPage(number));
+  };
 
-  const CATEGORY = categoryID ? `&category=${categoryID}` : "";
+  const CATEGORY = categoryId ? `&category=${categoryId}` : "";
   const SORT_BY = sort ? `&sortBy=${sort.sort} ` : "";
   const SEARCH = searchValue ? `&search=${searchValue}` : "";
 
@@ -37,14 +43,13 @@ const Home = ({ searchValue }) => {
     setIsLoading(true);
     axios
       .get(url)
-      .then((res) => res)
-      .then((data) => {
-        setItems(data.data);
+      .then((res) => {
+        setItems(res.data);
         setIsLoading(false);
       })
       .catch((err) => console.log(err.message));
     window.scrollTo(0, 0);
-  }, [categoryID, sort, searchValue, currentPage]);
+  }, [categoryId, sort, searchValue, currentPage]);
 
   const SCELETON = [...new Array(4)].map((_, idx) => <Sceleton key={idx} />);
   const PIZZA = items.map((obj) => <Pizza key={obj.id} {...obj} />);
@@ -52,12 +57,12 @@ const Home = ({ searchValue }) => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryID} event={onChangeCategoryID} />
+        <Categories value={categoryId} event={onChangeCategoryID} />
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? SCELETON : PIZZA}</div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination value={currentPage} onChangePage={onClickPageCount} />
     </div>
   );
 };
