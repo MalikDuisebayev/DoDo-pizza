@@ -1,4 +1,6 @@
 import React from "react";
+import { useRef } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSort } from "../../store/filterSlice/filterSlice";
@@ -9,18 +11,31 @@ const Sort = () => {
 
   const [openPopUp, setOpenPopUp] = useState(false);
 
+  const sortRef = useRef();
+
   const openSortTab = (obj) => {
     dispatch(setSort(obj));
     setOpenPopUp(!openPopUp);
   };
+
   const lists = [
     { name: "популярности", sortProperty: "rating" },
     { name: "цене", sortProperty: "price" },
     { name: "алфавиту", sortProperty: "title" },
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.path.includes(sortRef.current)) {
+        setOpenPopUp(false);
+      }
+    };
+    document.body.addEventListener("click", handleClickOutside);
+    return () => document.body.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
-    <div className="sort">
+    <div className="sort" ref={sortRef}>
       <div className="sort__label">
         <svg
           width="10"

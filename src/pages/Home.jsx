@@ -9,6 +9,8 @@ import Sceleton from "../components/Sceleton/Sceleton";
 
 import Pagination from "../components/UI/Pagination/Pagination";
 
+import { useNavigate } from "react-router-dom";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   setCategoryId,
@@ -20,6 +22,8 @@ const Home = ({ searchValue }) => {
     (state) => state.filter
   );
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const onChangeCategoryID = (id) => {
     dispatch(setCategoryId(id));
@@ -49,7 +53,7 @@ const Home = ({ searchValue }) => {
       })
       .catch((err) => console.log(err.message));
     window.scrollTo(0, 0);
-  }, [categoryId, sort, searchValue, currentPage]);
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   const SCELETON = [...new Array(4)].map((_, idx) => <Sceleton key={idx} />);
   const PIZZA = items.map((obj) => <Pizza key={obj.id} {...obj} />);
